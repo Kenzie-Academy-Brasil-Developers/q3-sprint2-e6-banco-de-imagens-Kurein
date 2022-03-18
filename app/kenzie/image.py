@@ -63,7 +63,7 @@ def upload_file(file):
 
     extension = file.filename
 
-    extension = file.split(".")[-1]
+    extension = file.filename.split(".")[-1]
 
     filepath = safe_join(absolute, f"{extension}/{file.filename}")
 

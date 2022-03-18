@@ -38,7 +38,7 @@ def upload():
 @app.get("/download/<file_name>")
 def download(file_name):
     try:
-        return send_file(download_filepath(file_name), as_attachment=True), HTTPStatus.ACCEPTED
+        return send_file(download_filepath(file_name), as_attachment=True), HTTPStatus.OK
     except ValueError:
         return {'msg': "invalid name"}, HTTPStatus.NOT_FOUND
     except FileNotFoundError:
