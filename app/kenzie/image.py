@@ -1,6 +1,4 @@
-from http import HTTPStatus
 import os
-from re import A
 
 from flask import safe_join
 
@@ -64,6 +62,13 @@ def allowed_extensions_filter(extension):
             return False
     
     return True
+
+def already_exists_filter(filename):
+    file_list = retrieve_all_files()
+    if filename in file_list:
+        return True
+    
+    return False
 
 def upload_file(file):
 
