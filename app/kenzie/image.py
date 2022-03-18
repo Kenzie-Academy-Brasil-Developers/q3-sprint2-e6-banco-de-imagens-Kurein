@@ -1,4 +1,6 @@
+from http import HTTPStatus
 import os
+from re import A
 
 FILES_DIRECTORY = os.getenv("FILES_DIRECTORY")
 
@@ -24,13 +26,31 @@ def create_files():
 
 def retrieve_all_files():
     files_list = []
-    try:
-        os.mkdir(absolute)
-    except FileExistsError:    
-        for *_, files in os. walk(absolute):
-            for file in files:
-                files_list.append(file)
 
-    print(absolute)
+    for *_, files in os. walk(absolute):
+        for file in files:
+            files_list.append(file)
 
     return files_list
+
+def retrieve_extension_files(extension):
+    files_list = []
+
+    if "." not in extension[0]:
+        extension = "." + extension
+        
+    for *_, files in os. walk(f"{absolute}/{extension}"):
+        for file in files:
+            files_list.append(file)
+
+    return files_list
+
+def allowed_extensions_filter(extension):
+    ALLOWED_EXTENSIONS = os.getenv("ALLOWED_EXTENSIONS")
+    extensions_list= ALLOWED_EXTENSIONS.split(", ")
+
+    for extension_item in extensions_list:
+        if extension == extension_item or extension == extension_item[1:]:
+            return False
+    
+    return True
