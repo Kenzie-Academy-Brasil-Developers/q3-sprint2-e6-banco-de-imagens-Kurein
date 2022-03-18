@@ -4,7 +4,7 @@ from app.kenzie import create_files_dir, retrieve_all_files, retrieve_extension_
 import os
 
 MAX_CONTENT_LENGTH = os.getenv("MAX_CONTENT_LENGTH")
-MAX_CONTENT_LENGTH = int(MAX_CONTENT_LENGTH[:-2])
+MAX_CONTENT_LENGTH = int(MAX_CONTENT_LENGTH)
 
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = MAX_CONTENT_LENGTH * 1024 * 1024

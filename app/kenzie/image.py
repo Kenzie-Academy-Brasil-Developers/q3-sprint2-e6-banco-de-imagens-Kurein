@@ -3,43 +3,34 @@ import os
 from flask import safe_join
 
 FILES_DIRECTORY = os.getenv("FILES_DIRECTORY")
+ALLOWED_EXTENSIONS = os.getenv("ALLOWED_EXTENSIONS")
 
 absolute = os.path.abspath(FILES_DIRECTORY)
 
 def create_files_dir():
+    extensions_list= ALLOWED_EXTENSIONS.split(", ")
     try:
         os.mkdir(absolute)
     except FileExistsError:
         pass
-    try:
-        os.mkdir(f"{absolute}/.gif")
-    except FileExistsError:
-        pass
-    try:
-        os.mkdir(f"{absolute}/.jpg")
-    except FileExistsError:
-        pass
-    try:
-        os.mkdir(f"{absolute}/.png")
-    except FileExistsError:
-        pass
+    for extension in extensions_list:
+        try:
+            os.mkdir(f"{absolute}/{extension}")
+        except FileExistsError:
+            pass
+        
 
 def retrieve_all_files():
     files_list = []
 
     for *_, files in os. walk(absolute):
         for file in files:
-            print(file)
-            print(type(file))
             files_list.append(file)
 
     return files_list
 
 def retrieve_extension_files(extension):
     files_list = []
-
-    if "." not in extension[0]:
-        extension = "." + extension
         
     for *_, files in os. walk(f"{absolute}/{extension}"):
         for file in files:
@@ -48,17 +39,15 @@ def retrieve_extension_files(extension):
     return files_list
 
 def allowed_extensions_filter(extension):
-    ALLOWED_EXTENSIONS = os.getenv("ALLOWED_EXTENSIONS")
     extensions_list= ALLOWED_EXTENSIONS.split(", ")
 
     try:
-        dot_index= extension.index(".")
-        extension = extension[dot_index:]
+        ext = extension.split(".")[-1]
     except ValueError:
         pass
 
     for extension_item in extensions_list:
-        if extension == extension_item or extension == extension_item[1:]:
+        if ext == extension_item:
             return False
     
     return True
@@ -74,8 +63,7 @@ def upload_file(file):
 
     extension = file.filename
 
-    dot_index= extension.index(".")
-    extension = extension[dot_index:]
+    extension = file.split(".")[-1]
 
     filepath = safe_join(absolute, f"{extension}/{file.filename}")
 
@@ -83,8 +71,7 @@ def upload_file(file):
 
 def download_filepath(filename):
 
-    dot_index= filename.index(".")
-    extension = filename[dot_index:]
+    extension = filename.split(".")[-1]
 
     filepath = safe_join(absolute, f"{extension}/{filename}")
     return filepath
