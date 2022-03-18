@@ -8,7 +8,7 @@ FILES_DIRECTORY = os.getenv("FILES_DIRECTORY")
 
 absolute = os.path.abspath(FILES_DIRECTORY)
 
-def create_files():
+def create_files_dir():
     try:
         os.mkdir(absolute)
     except FileExistsError:
@@ -31,6 +31,8 @@ def retrieve_all_files():
 
     for *_, files in os. walk(absolute):
         for file in files:
+            print(file)
+            print(type(file))
             files_list.append(file)
 
     return files_list
@@ -73,3 +75,11 @@ def upload_file(file):
     filepath = safe_join(absolute, f"{extension}/{file.filename}")
 
     file.save(filepath)
+
+def download_filepath(filename):
+
+    dot_index= filename.index(".")
+    extension = filename[dot_index:]
+
+    filepath = safe_join(absolute, f"{extension}/{filename}")
+    return filepath
