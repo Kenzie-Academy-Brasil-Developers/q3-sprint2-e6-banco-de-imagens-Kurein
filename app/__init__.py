@@ -1,7 +1,9 @@
 from flask import Flask, jsonify
-from app.kenzie import retrieve_all_files
+from app.kenzie import retrieve_all_files, create_files
 
 app = Flask(__name__)
+
+create_files()
 
 @app.post("/upload")
 def upload():
