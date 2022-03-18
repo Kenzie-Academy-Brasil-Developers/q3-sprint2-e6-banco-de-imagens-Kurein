@@ -2,6 +2,8 @@ from http import HTTPStatus
 import os
 from re import A
 
+from flask import safe_join
+
 FILES_DIRECTORY = os.getenv("FILES_DIRECTORY")
 
 absolute = os.path.abspath(FILES_DIRECTORY)
@@ -49,8 +51,25 @@ def allowed_extensions_filter(extension):
     ALLOWED_EXTENSIONS = os.getenv("ALLOWED_EXTENSIONS")
     extensions_list= ALLOWED_EXTENSIONS.split(", ")
 
+    try:
+        dot_index= extension.index(".")
+        extension = extension[dot_index:]
+    except ValueError:
+        pass
+
     for extension_item in extensions_list:
         if extension == extension_item or extension == extension_item[1:]:
             return False
     
     return True
+
+def upload_file(file):
+
+    extension = file.filename
+
+    dot_index= extension.index(".")
+    extension = extension[dot_index:]
+
+    filepath = safe_join(absolute, f"{extension}/{file.filename}")
+
+    file.save(filepath)

@@ -1,6 +1,6 @@
 from http import HTTPStatus
-from flask import Flask, jsonify
-from app.kenzie import create_files, retrieve_all_files, retrieve_extension_files, allowed_extensions_filter
+from flask import Flask, jsonify, request
+from app.kenzie import create_files, retrieve_all_files, retrieve_extension_files, allowed_extensions_filter, upload_file
 
 app = Flask(__name__)
 
@@ -16,11 +16,18 @@ def list_files_by_extension(extension):
     if allowed_extensions_filter(extension):
         return {'msg': f'extension {extension} not allowed or incorrect format'}, HTTPStatus.BAD_REQUEST
 
-    return jsonify(retrieve_extension_files(extension))
+    return jsonify(retrieve_extension_files(extension)), HTTPStatus.OK
 
 @app.post("/upload")
 def upload():
-    return ""
+
+    for file in request.files.values():
+        if allowed_extensions_filter(file.filename):
+            return {'msg': f'extension {file.filename} not allowed or incorrect format'}, HTTPStatus.BAD_REQUEST
+
+        upload_file(file)
+
+    return {"msg": "files uploaded"}, HTTPStatus.CREATED
 
 @app.get("/download/<file_name>")
 def download(file_name):
