@@ -1,8 +1,13 @@
 from http import HTTPStatus
 from flask import Flask, jsonify, request, send_file
 from app.kenzie import create_files_dir, retrieve_all_files, retrieve_extension_files, allowed_extensions_filter, upload_file, download_filepath
+import os
+
+MAX_CONTENT_LENGTH = os.getenv("MAX_CONTENT_LENGTH")
+MAX_CONTENT_LENGTH = int(MAX_CONTENT_LENGTH[:-2])
 
 app = Flask(__name__)
+app.config["MAX_CONTENT_LENGTH"] = MAX_CONTENT_LENGTH * 1024 * 1024
 
 create_files_dir()
 
